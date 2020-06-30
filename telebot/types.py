@@ -81,11 +81,7 @@ class JsonDeserializable(object):
     def __str__(self):
         d = {}
         for x, y in six.iteritems(self.__dict__):
-            if hasattr(y, '__dict__'):
-                d[x] = y.__dict__
-            else:
-                d[x] = y
-
+            d[x] = y.__dict__ if hasattr(y, '__dict__') else y
         return six.text_type(d)
 
 
@@ -151,7 +147,6 @@ class WebhookInfo(JsonDeserializable):
         allowed_updates = None
         if 'last_error_message' in obj:
             last_error_date = obj['last_error_date']
-        if 'last_error_message' in obj:
             last_error_message = obj['last_error_message']
         if 'max_connections' in obj:
             max_connections = obj['max_connections']
@@ -382,17 +377,11 @@ class Message(JsonDeserializable):
 
     @classmethod
     def parse_photo(cls, photo_size_array):
-        ret = []
-        for ps in photo_size_array:
-            ret.append(PhotoSize.de_json(ps))
-        return ret
+        return [PhotoSize.de_json(ps) for ps in photo_size_array]
 
     @classmethod
     def parse_entities(cls, message_entity_array):
-        ret = []
-        for me in message_entity_array:
-            ret.append(MessageEntity.de_json(me))
-        return ret
+        return [MessageEntity.de_json(me) for me in message_entity_array]
 
     def __init__(self, message_id, from_user, date, chat, content_type, options, json_string):
         self.content_type = content_type
@@ -480,7 +469,7 @@ class Message(JsonDeserializable):
                 url = "tg://user?id={0}".format(user.id)
             elif type == "mention":
                 url = "https://t.me/{0}".format(text[1:])
-            if not type or not _subs.get(type):
+            if not (type and _subs.get(type)):
                 return text
             subs = _subs.get(type)
             text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -777,7 +766,7 @@ class ReplyKeyboardMarkup(JsonSerializable):
                 self.keyboard.append(row)
                 row = []
             i += 1
-        if len(row) > 0:
+        if row:
             self.keyboard.append(row)
 
     def row(self, *args):
@@ -857,7 +846,7 @@ class InlineKeyboardMarkup(Dictionaryable, JsonSerializable):
                 self.keyboard.append(row)
                 row = []
             i += 1
-        if len(row) > 0:
+        if row:
             self.keyboard.append(row)
 
     def row(self, *args):
@@ -868,9 +857,7 @@ class InlineKeyboardMarkup(Dictionaryable, JsonSerializable):
         :param args: strings
         :return: self, to allow function chaining.
         """
-        btn_array = []
-        for button in args:
-            btn_array.append(button.to_dic())
+        btn_array = [button.to_dic() for button in args]
         self.keyboard.append(btn_array)
         return self
 
@@ -884,8 +871,7 @@ class InlineKeyboardMarkup(Dictionaryable, JsonSerializable):
         return json.dumps(json_dict)
 
     def to_dic(self):
-        json_dict = {'inline_keyboard': self.keyboard}
-        return json_dict
+        return {'inline_keyboard': self.keyboard}
 
 
 class LoginUrl(JsonSerializable):
@@ -1786,17 +1772,11 @@ class Game(JsonDeserializable):
 
     @classmethod
     def parse_photo(cls, photo_size_array):
-        ret = []
-        for ps in photo_size_array:
-            ret.append(PhotoSize.de_json(ps))
-        return ret
+        return [PhotoSize.de_json(ps) for ps in photo_size_array]
 
     @classmethod
     def parse_entities(cls, message_entity_array):
-        ret = []
-        for me in message_entity_array:
-            ret.append(MessageEntity.de_json(me))
-        return ret
+        return [MessageEntity.de_json(me) for me in message_entity_array]
 
     def __init__(self, title, description, photo, text=None, text_entities=None, animation=None):
         self.title = title
@@ -1931,11 +1911,8 @@ class ShippingOption(JsonSerializable):
             self.prices.append(price)
 
     def to_json(self):
-        price_list = []
-        for p in self.prices:
-            price_list.append(p.to_dic())
-        json_dict = json.dumps({'id': self.id, 'title': self.title, 'prices': price_list})
-        return json_dict
+        price_list = [p.to_dic() for p in self.prices]
+        return json.dumps({'id': self.id, 'title': self.title, 'prices': price_list})
 
 
 class SuccessfulPayment(JsonDeserializable):
@@ -2119,8 +2096,7 @@ class InputMediaPhoto(InputMedia):
         super(InputMediaPhoto, self).__init__(type="photo", media=media, caption=caption, parse_mode=parse_mode)
 
     def to_dic(self):
-        ret = super(InputMediaPhoto, self).to_dic()
-        return ret
+        return super(InputMediaPhoto, self).to_dic()
 
 
 class InputMediaVideo(InputMedia):

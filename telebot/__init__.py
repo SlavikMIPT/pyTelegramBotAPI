@@ -312,23 +312,23 @@ class TeleBot:
                 new_pre_checkout_querys.append(update.pre_checkout_query)
 
         logger.debug('Received {0} new updates'.format(len(updates)))
-        if len(new_messages) > 0:
+        if new_messages:
             self.process_new_messages(new_messages)
-        if len(edited_new_messages) > 0:
+        if edited_new_messages:
             self.process_new_edited_messages(edited_new_messages)
-        if len(new_channel_posts) > 0:
+        if new_channel_posts:
             self.process_new_channel_posts(new_channel_posts)
-        if len(new_edited_channel_posts) > 0:
+        if new_edited_channel_posts:
             self.process_new_edited_channel_posts(new_edited_channel_posts)
-        if len(new_inline_querys) > 0:
+        if new_inline_querys:
             self.process_new_inline_query(new_inline_querys)
-        if len(new_chosen_inline_results) > 0:
+        if new_chosen_inline_results:
             self.process_new_chosen_inline_query(new_chosen_inline_results)
-        if len(new_callback_querys) > 0:
+        if new_callback_querys:
             self.process_new_callback_query(new_callback_querys)
-        if len(new_pre_checkout_querys) > 0:
+        if new_pre_checkout_querys:
             self.process_new_pre_checkout_query(new_pre_checkout_querys)
-        if len(new_shipping_querys) > 0:
+        if new_shipping_querys:
             self.process_new_shipping_query(new_shipping_querys)
 
     def process_new_messages(self, new_messages):
@@ -371,7 +371,6 @@ class TeleBot:
                 self.polling(timeout=timeout, *args, **kwargs)
             except Exception as e:
                 time.sleep(timeout)
-                pass
         logger.info("Break infinity polling")
 
     def polling(self, none_stop=False, interval=0, timeout=20):
@@ -517,8 +516,7 @@ class TeleBot:
         :param chat_id:
         :return:
         """
-        result = apihelper.leave_chat(self.token, chat_id)
-        return result
+        return apihelper.leave_chat(self.token, chat_id)
 
     def get_chat_administrators(self, chat_id):
         """
@@ -539,8 +537,7 @@ class TeleBot:
         :param chat_id:
         :return:
         """
-        result = apihelper.get_chat_members_count(self.token, chat_id)
-        return result
+        return apihelper.get_chat_members_count(self.token, chat_id)
 
     def set_chat_sticker_set(self, chat_id, sticker_set_name):
         """
@@ -553,8 +550,7 @@ class TeleBot:
         :param sticker_set_name: Name of the sticker set to be set as the group sticker set
         :return:
         """
-        result = apihelper.set_chat_sticker_set(self.token, chat_id, sticker_set_name)
-        return result
+        return apihelper.set_chat_sticker_set(self.token, chat_id, sticker_set_name)
 
     def delete_chat_sticker_set(self, chat_id):
         """
@@ -565,8 +561,7 @@ class TeleBot:
         (in the format @supergroupusername)
         :return:
         """
-        result = apihelper.delete_chat_sticker_set(self.token, chat_id)
-        return result
+        return apihelper.delete_chat_sticker_set(self.token, chat_id)
 
     def get_chat_member(self, chat_id, user_id):
         """
